@@ -1,0 +1,39 @@
+struct mycmp {
+        bool operator()(const pair<int, int>& a, const pair<int, int>& b) {
+            return a.first > b.first;
+        }
+    };
+    int networkDelayTime(vector<vector<int>>& times, int N, int K) {
+        unordered_map<int, vector<pair<int, int>>> graph;
+        
+        for (auto time: times) {
+            graph[time[0]].push_back(make_pair(time[1], time[2]));
+        }
+        
+        unordered_map<int, int> visited;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, mycmp> pq;
+        pq.push(make_pair(0, K));
+        
+        while (!pq.empty()) {
+            pair<int, int> tp = pq.top();
+            pq.pop();
+            int dt = tp.first, src = tp.second;
+            if (visited.find(src) != visited.end()) 
+                continue;
+            visited[src] = dt;
+            if (graph.find(src) != graph.end()) {
+                for (auto node: graph[src]) {
+                    int nei = node.first, d = node.second;
+                    if (visited.find(nei) == visited.end()) {
+                        pq.push(make_pair(d+dt, nei));
+                    }
+                }
+            }
+        }
+        if (visited.size() < N) return -1;
+        int res = 0;
+        for(auto ele: visited) {
+            res = max(res, ele.second);
+        }
+        return res;
+    }
