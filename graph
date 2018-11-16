@@ -66,3 +66,29 @@ struct mycmp {
         }
         return roots;
     }
+
+
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        vector<bool> visited (rooms.size()-1, false);
+        visited[0] = true; 
+        int visitedRooms = 1; 
+        int numberOfRooms = rooms.size(); 
+        stack<int> keys; 
+        for(int k : rooms[0]){
+            keys.push(k); 
+        }
+        //stack now contains all the keys of the first room 
+        while(visitedRooms != numberOfRooms && !keys.empty()){
+            int topKey = keys.top();
+            keys.pop();
+            if(!visited[topKey]){
+                visited[topKey] = true; 
+                //add all the keys 
+                for(int key : rooms[topKey]){
+                    keys.push(key); 
+                }
+                visitedRooms++;
+            }
+        }
+        return visitedRooms == numberOfRooms; 
+    }
